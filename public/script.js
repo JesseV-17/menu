@@ -24,9 +24,9 @@ const getFormData = () => {
         if (el.type === 'checkbox') {
             json[el.name] = el.checked
         }
-        // Represent number and range inputs as actual numbers
+        // Keep number and range inputs as strings to match Prisma schema
         else if (el.type === 'number' || el.type === 'range') {
-            json[el.name] = isEmpty ? null : Number(value)
+            json[el.name] = isEmpty ? null : value
         }
         // Represent all date inputs in ISO-8601 DateTime format
         else if (el.type === 'date') {
