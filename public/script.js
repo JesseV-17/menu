@@ -115,7 +115,7 @@ const editItem = (data) => {
     })
 
     // Update the heading to indicate edit mode
-    formHeading.textContent = '🐈 Edit Cat'
+    formHeading.textContent = '🍔 Edit Menu Item'
 
     // Show the popover
     formPopover.showPopover()
@@ -123,7 +123,7 @@ const editItem = (data) => {
 
 // Delete item
 const deleteItem = async (id) => {
-    if (!confirm('Are you sure you want to delete this cat?')) {
+    if (!confirm('Are you sure you want to delete this menu item?')) {
         return
     }
 
@@ -172,57 +172,33 @@ const renderItem = (item) => {
 
     const template = /*html*/`  
     <div class="item-heading">
-        <h3> ${item.name} </h3>
-        <div class="microchip-info">
-            <img src="./assets/chip.svg" /> ${item.microchip || '<i>???</i>'} 
+        <h3>${item.ITEM || 'Unnamed Item'}</h3>
+        <div class="category-badge">
+            ${item.CATEGORY || 'N/A'}
         </div>  
     </div>
     <div class="item-info"> 
-        <div class="item-icon" style="
-            background: linear-gradient(135deg, 
-            ${item.primaryColor} 0%, 
-            ${item.primaryColor} 40%, 
-            ${item.secondaryColor} 60%, 
-            ${item.secondaryColor} 100%); 
-        ">
-        </div> 
-        <div class="stats">
-            <div class="stat">
-                <span>Playfulness</span>
-                <meter max="10" min="0" value="${item.playfulness || 0}"></meter> 
+        <div class="nutrition-facts">
+            <h4>Nutrition Facts</h4>
+            <div class="nutrition-grid">
+                ${item.CAL ? `<div class="nutrition-item"><span>Calories:</span> <strong>${item.CAL}</strong></div>` : ''}
+                ${item.FAT ? `<div class="nutrition-item"><span>Total Fat:</span> <strong>${item.FAT}g</strong></div>` : ''}
+                ${item.SFAT ? `<div class="nutrition-item"><span>Saturated Fat:</span> <strong>${item.SFAT}g</strong></div>` : ''}
+                ${item.TFAT ? `<div class="nutrition-item"><span>Trans Fat:</span> <strong>${item.TFAT}g</strong></div>` : ''}
+                ${item.CHOL ? `<div class="nutrition-item"><span>Cholesterol:</span> <strong>${item.CHOL}mg</strong></div>` : ''}
+                ${item.SALT ? `<div class="nutrition-item"><span>Sodium:</span> <strong>${item.SALT}mg</strong></div>` : ''}
+                ${item.CARB ? `<div class="nutrition-item"><span>Carbohydrates:</span> <strong>${item.CARB}g</strong></div>` : ''}
+                ${item.FBR ? `<div class="nutrition-item"><span>Fiber:</span> <strong>${item.FBR}g</strong></div>` : ''}
+                ${item.SGR ? `<div class="nutrition-item"><span>Sugar:</span> <strong>${item.SGR}g</strong></div>` : ''}
+                ${item.PRO ? `<div class="nutrition-item"><span>Protein:</span> <strong>${item.PRO}g</strong></div>` : ''}
             </div>
-            <div class="stat">
-                <span>Appetite</span>
-                <meter max="10" min="0" value="${item.appetite || 0}"></meter> 
-            </div>
-        </div> 
-            
-         ${calendarWidget(item.birthDate)}
-    </div>
-        
-    <div class="item-info">  
-        <section class="breed" style="${item.breed ? '' : 'display:none;'}">  
-            <img src="./assets/ribbon.svg" />  ${item.breed}
-        </section>
-        <section class="food" style="${item.food ? '' : 'display:none;'}">
-             <img src="./assets/${item.food}.svg" /> <span>${item.food} food</span>
-        </section> 
-        <section class="adoption">
-            <img src="./assets/${item.isAdopted ? 'adopted' : 'paw'}.svg" />
-            ${item.isAdopted ? 'Adopted' : 'Available'}
-        </section> 
-    </div>
-
-    <section class="description" style="${item.description ? '' : 'display:none;'}">  
-        <p>${item.description}</p>
-    </section>
-
-        
-           
-        <div class="item-actions">
-            <button class="edit-btn">Edit</button>
-            <button class="delete-btn">Delete</button>
         </div>
+    </div>
+        
+    <div class="item-actions">
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+    </div>
     `
     div.innerHTML = DOMPurify.sanitize(template);
 
@@ -272,7 +248,7 @@ const getData = async () => {
 }
 
 // Revert to the default form title on reset
-myForm.addEventListener('reset', () => formHeading.textContent = '🐈 Share a Cat')
+myForm.addEventListener('reset', () => formHeading.textContent = '🍔 Add Menu Item')
 
 // Reset the form when the create button is clicked. 
 createButton.addEventListener('click', myForm.reset())
