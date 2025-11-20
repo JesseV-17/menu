@@ -187,10 +187,10 @@ const renderItem = (item) => {
 
     const template = /*html*/`  
     <div class="item-heading">
-        <h3>${item.ITEM || 'Unnamed Item'}</h3>
         <div class="category-badge">
             ${item.CATEGORY || 'N/A'}
-        </div>  
+        </div>
+        <h3>${item.ITEM || 'Unnamed Item'}</h3>  
     </div>
     <div class="item-info"> 
         <div class="nutrition-facts">
