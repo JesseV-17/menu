@@ -92,7 +92,7 @@ button.cancel:hover {
 
 #contentArea {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
 }
 
@@ -261,7 +261,7 @@ textarea:user-invalid+.validation {
 }
 
 .item-card h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: 0 0 1rem 0;
     color: #333;
 }
@@ -423,6 +423,12 @@ meter::-webkit-meter-even-less-good-value {
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
 }
 
 
