@@ -42,9 +42,8 @@ router.post('/data', async (req, res) => {
 // ----- READ (GET) list ----- 
 router.get('/data', async (req, res) => {
     try {
-        // fetch first 100 records from the database, newest first
+        // fetch all records from the database, newest first
         const result = await prisma[model].findMany({
-            take: 100,
             orderBy: {
                 id: 'desc'  // Show newest items first (ObjectId contains timestamp)
             }

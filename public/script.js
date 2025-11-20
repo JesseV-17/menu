@@ -1,5 +1,3 @@
-let readyStatus = document.querySelector('#readyStatus')
-let notReadyStatus = document.querySelector('#notReadyStatus')
 let myForm = document.querySelector('#myForm')
 let contentArea = document.querySelector('#contentArea')
 let formPopover = document.querySelector('#formPopover')
@@ -231,9 +229,6 @@ const getData = async () => {
         const response = await fetch('/data')
 
         if (response.ok) {
-            readyStatus.style.display = 'block'
-            notReadyStatus.style.display = 'none'
-
             const data = await response.json()
             console.log('Fetched data:', data)
             console.log('Number of items:', data.length)
@@ -251,16 +246,13 @@ const getData = async () => {
             }
         }
         else {
-            // If the request failed, show the "not ready" status
-            // to inform users that there may be a database connection issue
-            notReadyStatus.style.display = 'block'
-            readyStatus.style.display = 'none'
+            // If the request failed, hide the create button
             createButton.style.display = 'none'
-            contentArea.style.display = 'none'
+            contentArea.innerHTML = '<p>❌ Could not connect to the database.</p>'
         }
     } catch (error) {
         console.error('Error fetching data:', error)
-        notReadyStatus.style.display = 'block'
+        contentArea.innerHTML = '<p>❌ Error loading menu items.</p>'
     }
 }
 
