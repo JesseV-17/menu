@@ -92,7 +92,7 @@ button.cancel:hover {
 
 #contentArea {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
 }
 
