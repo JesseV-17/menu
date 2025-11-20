@@ -267,8 +267,15 @@ const getData = async () => {
 // Revert to the default form title on reset
 myForm.addEventListener('reset', () => formHeading.textContent = '🍔 Add Menu Item')
 
-// Reset the form when the create button is clicked. 
-createButton.addEventListener('click', myForm.reset())
+// Reset the form when the create button is clicked
+createButton.addEventListener('click', () => myForm.reset())
+
+// Handle cancel button click
+const cancelButton = document.querySelector('button.cancel')
+cancelButton.addEventListener('click', () => {
+    myForm.reset()
+    formPopover.hidePopover()
+})
 
 // Load initial data
 getData()
