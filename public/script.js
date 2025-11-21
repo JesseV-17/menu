@@ -3,6 +3,22 @@ let contentArea = document.querySelector('#contentArea')
 let formPopover = document.querySelector('#formPopover')
 let createButton = document.querySelector('#createButton')
 let formHeading = document.querySelector('#formPopover h2')
+let searchInput = document.querySelector('#searchInput')
+let categoryFilter = document.querySelector('#categoryFilter')
+
+// Store all items for filtering
+let allItems = []
+
+// Toast notification function
+const showToast = (message) => {
+    const toast = document.getElementById('toast')
+    toast.textContent = message
+    toast.classList.add('show')
+    
+    setTimeout(() => {
+        toast.classList.remove('show')
+    }, 3000)
+}
 
 // Get form data and process each type of input
 // Prepare the data as JSON with a proper set of types
@@ -16,6 +32,12 @@ const getFormData = () => {
     // Handle checkboxes, dates, and numbers
     myForm.querySelectorAll('input').forEach(el => {
         const value = json[el.name]
+        
+        // Skip processing for hidden inputs (like id field)
+        if (el.type === 'hidden') {
+            return
+        }
+        
         const isEmpty = !value || value.trim() === ''
 
         // Represent checkboxes as a Boolean value (true/false)
@@ -96,7 +118,7 @@ const saveItem = async (data) => {
 
         const result = await response.json()
         console.log('Saved:', result)
-        alert('Menu item saved successfully!')
+        showToast('Menu item saved successfully!')
 
         // Refresh the data list
         getData()
@@ -128,7 +150,7 @@ const editItem = (data) => {
     })
 
     // Update the heading to indicate edit mode
-    formHeading.textContent = '🍔 Edit Menu Item'
+    formHeading.textContent = 'Edit Menu Item'
 
     // Show the popover
     formPopover.showPopover()
@@ -136,30 +158,51 @@ const editItem = (data) => {
 
 // Delete item
 const deleteItem = async (id) => {
-    if (!confirm('Are you sure you want to delete this menu item?')) {
-        return
-    }
+    const modal = document.getElementById('deleteModal')
+    const confirmBtn = document.getElementById('confirmDelete')
+    const cancelBtn = document.getElementById('cancelDelete')
+    
+    // Show modal
+    modal.classList.add('show')
+    
+    // Handle confirmation
+    const handleConfirm = async () => {
+        modal.classList.remove('show')
+        confirmBtn.removeEventListener('click', handleConfirm)
+        cancelBtn.removeEventListener('click', handleCancel)
+        
+        const endpoint = `/data/${id}`
+        const options = { method: "DELETE" }
 
-    const endpoint = `/data/${id}`
-    const options = { method: "DELETE" }
+        try {
+            const response = await fetch(endpoint, options)
 
-    try {
-        const response = await fetch(endpoint, options)
-
-        if (response.ok) {
-            const result = await response.json()
-            console.log('Deleted:', result)
-            // Refresh the data list
-            getData()
+            if (response.ok) {
+                const result = await response.json()
+                console.log('Deleted:', result)
+                showToast('Item deleted successfully')
+                // Refresh the data list
+                getData()
+            }
+            else {
+                const errorData = await response.json()
+                alert(errorData.error || 'Failed to delete item')
+            }
+        } catch (error) {
+            console.error('Delete error:', error)
+            alert('An error occurred while deleting')
         }
-        else {
-            const errorData = await response.json()
-            alert(errorData.error || 'Failed to delete item')
-        }
-    } catch (error) {
-        console.error('Delete error:', error)
-        alert('An error occurred while deleting')
     }
+    
+    // Handle cancel
+    const handleCancel = () => {
+        modal.classList.remove('show')
+        confirmBtn.removeEventListener('click', handleConfirm)
+        cancelBtn.removeEventListener('click', handleCancel)
+    }
+    
+    confirmBtn.addEventListener('click', handleConfirm)
+    cancelBtn.addEventListener('click', handleCancel)
 }
 
 
@@ -222,6 +265,34 @@ const renderItem = (item) => {
     return div
 }
 
+// Filter and display items based on search and category
+const filterAndDisplayItems = () => {
+    const searchTerm = searchInput.value.toLowerCase().trim()
+    const selectedCategory = categoryFilter.value
+
+    const filteredItems = allItems.filter(item => {
+        // Filter by search term
+        const matchesSearch = !searchTerm || 
+            (item.ITEM && item.ITEM.toLowerCase().includes(searchTerm))
+        
+        // Filter by category
+        const matchesCategory = !selectedCategory || item.CATEGORY === selectedCategory
+        
+        return matchesSearch && matchesCategory
+    })
+
+    // Display filtered items
+    contentArea.innerHTML = ''
+    if (filteredItems.length === 0) {
+        contentArea.innerHTML = '<p><i>No items match your search.</i></p>'
+    } else {
+        filteredItems.forEach(item => {
+            const itemDiv = renderItem(item)
+            contentArea.appendChild(itemDiv)
+        })
+    }
+}
+
 // fetch items from API endpoint and populate the content div
 const getData = async () => {
     console.log('getData() called - fetching menu items...')
@@ -238,21 +309,18 @@ const getData = async () => {
                 return
             }
             else {
-                contentArea.innerHTML = ''
-                data.forEach(item => {
-                    const itemDiv = renderItem(item)
-                    contentArea.appendChild(itemDiv)
-                })
+                allItems = data
+                filterAndDisplayItems()
             }
         }
         else {
             // If the request failed, hide the create button
             createButton.style.display = 'none'
-            contentArea.innerHTML = '<p>❌ Could not connect to the database.</p>'
+            contentArea.innerHTML = '<p>Could not connect to the database.</p>'
         }
     } catch (error) {
         console.error('Error fetching data:', error)
-        contentArea.innerHTML = '<p>❌ Error loading menu items.</p>'
+        contentArea.innerHTML = '<p>Error loading menu items.</p>'
     }
 }
 
@@ -268,6 +336,10 @@ cancelButton.addEventListener('click', () => {
     myForm.reset()
     formPopover.hidePopover()
 })
+
+// Add search and filter event listeners
+searchInput.addEventListener('input', filterAndDisplayItems)
+categoryFilter.addEventListener('change', filterAndDisplayItems)
 
 // Load initial data
 getData()
