@@ -5,7 +5,7 @@
 body {
     min-height: 100vh;
     margin: 0;
-    padding: 0 80px;
+    padding: 20px 40px;
     text-align: center;
     font-family: 'Arimo', sans-serif;
     font-optical-sizing: auto;
@@ -17,7 +17,6 @@ body {
     background-color: #f8f9fa;
     box-sizing: border-box;
     overflow-x: hidden;
-    margin: 70px 50px 0px 50px;
 }
 
 header h1 {
@@ -434,7 +433,7 @@ textarea:user-invalid+.validation {
     display: flex;
     flex-direction: column;
     align-items: start;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.5rem;
     text-align: left;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -449,15 +448,17 @@ textarea:user-invalid+.validation {
 
 .item-card h3 {
     font-size: 1.6rem;
-    margin: 0 0 0.25rem 0;
+    margin: 0;
     color: #333;
+    line-height: 1.2;
 }
 
 .category-badge {
     color: #ffbc0d;
     font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;
+    margin: 0;
+    line-height: 1;
 }
 
 .item-actions {
@@ -641,7 +642,16 @@ meter::-webkit-meter-even-less-good-value {
 
 .nutrition-grid {
     display: grid;
-    grid-template-columns: 70% 70%;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+    overflow: hidden;
+}
+
+.nutrition-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     gap: 0.5rem;
 }
 
