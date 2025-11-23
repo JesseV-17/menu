@@ -8,7 +8,7 @@
     content="width=device-width initial-scale=1"
   />
 
-  <title>Managing Data</title>
+  <title>McDonalds Menu Items</title>
 
   <link
     rel="preconnect"
@@ -36,20 +36,32 @@
 
 <body>
   <header>
-    <h1>Managing Data</h1>
-    <h4>CRUD: a full data lifecycle</h4>
+    <h1>McDonald's Menu Items</h1>
   </header>
-  <button
-    id="createButton"
-    popovertarget="formPopover"
-  >Create New Menu Item</button>
 
   <div
     id="formPopover"
     popover
   >
-    <h2>Add Menu Item</h2>
-    <p>Add a new item to the menu</p>
+    <button
+      class="close-popover"
+      popovertarget="formPopover"
+      popovertargetaction="hide"
+    >
+      <img src="./assets/x.svg" alt="Close" />
+    </button>
+    <div class="form-header">
+      <h2>Add Menu Item</h2>
+      <div class="form-header-buttons">
+        <button class="save" type="submit" form="myForm">Save</button>
+        <button
+          class="cancel"
+          type="button"
+          popovertarget="formPopover"
+          popovertargetaction="hide"
+        >Cancel</button>
+      </div>
+    </div>
     <form id="myForm">
       <!-- Hidden field to store ID for updates -->
       <input
@@ -58,7 +70,7 @@
         id="id"
       />
 
-      <fieldset>
+      <fieldset class="field-item-name">
         <label for="ITEM">Item Name</label>
         <input
           required
@@ -71,17 +83,157 @@
         <small class="validation">Item name is required</small>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="field-category">
         <label for="CATEGORY">Category</label>
         <select
           name="CATEGORY"
           id="CATEGORY"
+          required
         >
           <option
             value=""
             disabled
             selected
           >Select a Category</option>
+          <option value="BURGERSANDWICH">Burger & Sandwich</option>
+          <option value="CHICKENFISH">Chicken & Fish</option>
+          <option value="SALAD">Salads</option>
+          <option value="BREAKFAST">Breakfast</option>
+          <option value="BEVERAGE">Beverages</option>
+          <option value="DESSERTSHAKE">Desserts</option>
+          <option value="SNACKSIDE">Snacks & Sides</option>
+          <option value="MCCAFE">McCafé</option>
+        </select>
+      </fieldset>
+
+      <div class="field-nutrition nutrition-row-1">
+        <fieldset>
+          <label for="CAL">Calories (CAL)</label>
+          <input
+            type="number"
+            name="CAL"
+            id="CAL"
+            placeholder="e.g. 740"
+            step="1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="FAT">Total Fat (g)</label>
+          <input
+            type="number"
+            name="FAT"
+            id="FAT"
+            placeholder="e.g. 41"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="SFAT">Saturated Fat (g)</label>
+          <input
+            type="number"
+            name="SFAT"
+            id="SFAT"
+            placeholder="e.g. 16"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="TFAT">Trans Fat (g)</label>
+          <input
+            type="number"
+            name="TFAT"
+            id="TFAT"
+            placeholder="e.g. 1.5"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="CHOL">Cholesterol (mg)</label>
+          <input
+            type="number"
+            name="CHOL"
+            id="CHOL"
+            placeholder="e.g. 125"
+            step="1"
+          />
+        </fieldset>
+      </div>
+
+      <div class="field-nutrition nutrition-row-2">
+        <fieldset>
+          <label for="SALT">Sodium (mg)</label>
+          <input
+            type="number"
+            name="SALT"
+            id="SALT"
+            placeholder="e.g. 1480"
+            step="1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="CARB">Carbohydrates (g)</label>
+          <input
+            type="number"
+            name="CARB"
+            id="CARB"
+            placeholder="e.g. 51"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="FBR">Fiber (g)</label>
+          <input
+            type="number"
+            name="FBR"
+            id="FBR"
+            placeholder="e.g. 4"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="SGR">Sugar (g)</label>
+          <input
+            type="number"
+            name="SGR"
+            id="SGR"
+            placeholder="e.g. 14"
+            step="0.1"
+          />
+        </fieldset>
+
+        <fieldset>
+          <label for="PRO">Protein (g)</label>
+          <input
+            type="number"
+            name="PRO"
+            id="PRO"
+            placeholder="e.g. 40"
+            step="0.1"
+          />
+        </fieldset>
+      </div>
+
+    </form>
+  </div>
+
+  <main>
+    <div class="controls-wrapper">
+      <div class="controls">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search menu items..."
+          autocomplete="off"
+        />
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
           <option value="BURGERSANDWICH">Burger & Sandwich</option>
           <option value="CHICKENFISH">Chicken & Fish</option>
           <option value="SALADS">Salads</option>
@@ -91,150 +243,13 @@
           <option value="SNACKSIDE">Snacks & Sides</option>
           <option value="MCCAFE">McCafé</option>
         </select>
-      </fieldset>
-
-      <fieldset>
-        <label for="CAL">Calories (CAL)</label>
-        <input
-          type="number"
-          name="CAL"
-          id="CAL"
-          placeholder="e.g. 740"
-          step="1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="FAT">Total Fat (g)</label>
-        <input
-          type="number"
-          name="FAT"
-          id="FAT"
-          placeholder="e.g. 41"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="SFAT">Saturated Fat (g)</label>
-        <input
-          type="number"
-          name="SFAT"
-          id="SFAT"
-          placeholder="e.g. 16"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="TFAT">Trans Fat (g)</label>
-        <input
-          type="number"
-          name="TFAT"
-          id="TFAT"
-          placeholder="e.g. 1.5"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="CHOL">Cholesterol (mg)</label>
-        <input
-          type="number"
-          name="CHOL"
-          id="CHOL"
-          placeholder="e.g. 125"
-          step="1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="SALT">Sodium (mg)</label>
-        <input
-          type="number"
-          name="SALT"
-          id="SALT"
-          placeholder="e.g. 1480"
-          step="1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="CARB">Carbohydrates (g)</label>
-        <input
-          type="number"
-          name="CARB"
-          id="CARB"
-          placeholder="e.g. 51"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="FBR">Fiber (g)</label>
-        <input
-          type="number"
-          name="FBR"
-          id="FBR"
-          placeholder="e.g. 4"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="SGR">Sugar (g)</label>
-        <input
-          type="number"
-          name="SGR"
-          id="SGR"
-          placeholder="e.g. 14"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <label for="PRO">Protein (g)</label>
-        <input
-          type="number"
-          name="PRO"
-          id="PRO"
-          placeholder="e.g. 40"
-          step="0.1"
-        />
-      </fieldset>
-
-      <fieldset>
-        <button class="save">Save</button>
-        <button
-          class="cancel"
-          type="button"
-          popovertarget="formPopover"
-          popovertargetaction="hide"
-        >Cancel</button>
-      </fieldset>
-    </form>
-  </div>
-
-  <main>
-    <h2>Menu Items</h2>
-    <div class="controls">
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Search menu items..."
-        autocomplete="off"
-      />
-      <select id="categoryFilter">
-        <option value="">All Categories</option>
-        <option value="BURGERSANDWICH">Burger & Sandwich</option>
-        <option value="CHICKENFISH">Chicken & Fish</option>
-        <option value="SALADS">Salads</option>
-        <option value="BREAKFAST">Breakfast</option>
-        <option value="BEVERAGE">Beverages</option>
-        <option value="DESSERTSHAKE">Desserts</option>
-        <option value="SNACKSIDE">Snacks & Sides</option>
-        <option value="MCCAFE">McCafé</option>
-      </select>
+      </div>
+      <button
+        id="createButton"
+        popovertarget="formPopover"
+      >
+        <img src="./assets/plus.svg" alt="Add Menu Item" />
+      </button>
     </div>
     <section id="contentArea"></section>
   </main>
@@ -253,7 +268,7 @@
   </div>
 
   <script
-    src="script.js?v=2"
+    src="script.js?v=4"
     type="module"
   ></script>
 

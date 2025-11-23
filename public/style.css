@@ -7,7 +7,7 @@ body {
     margin: 0;
     padding: 0 80px;
     text-align: center;
-    font-family: "Jost", sans-serif;
+    font-family: 'Arimo', sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
@@ -17,8 +17,14 @@ body {
     background-color: #f8f9fa;
     box-sizing: border-box;
     overflow-x: hidden;
+    margin: 70px 50px 0px 50px;
 }
 
+header h1 {
+  margin: 100px 0px 0px 0px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
 
 h2 img {
     width: 2rem;
@@ -79,11 +85,11 @@ button {
 }
 
 button.save {
-    background: rgb(3, 136, 3);
+    background: #ffbc0d;
 }
 
 button.save:hover {
-    background-color: rgb(3, 103, 3);
+    background-color: #e5a900;
 }
 
 button.cancel {
@@ -120,12 +126,57 @@ main {
 /* Popover styling */
 #formPopover {
     max-width: 60rem;
-    padding: 2rem;
+    min-height: 30rem;
+    padding: 3rem;
+    padding-top: 4rem;
     border: none;
     border-radius: 1rem;
     box-shadow: 0 0 2rem rgba(0, 0, 0, 0.3);
     margin: auto;
+    overflow-x: hidden;
+    position: relative;
+    padding-top: 80px;
+}
 
+.close-popover {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.close-popover:hover {
+    opacity: 1;
+}
+
+.close-popover img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#formPopover .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+#formPopover .form-header h2 {
+    margin: 0;
+}
+
+#formPopover .form-header-buttons {
+    display: flex;
+    gap: 1rem;
 }
 
 #formPopover::backdrop {
@@ -134,56 +185,74 @@ main {
 
 /* Create button */
 #createButton {
-    margin: 2rem auto;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    background: rgb(3, 136, 3);
+    padding: 0.75rem;
+    background: #ffbc0e;
     border: none;
-    border-radius: 1rem;
-    color: white;
+    border-radius: 50%;
     cursor: pointer;
-    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    transition: background 0.2s ease;
+}
+
+#createButton img {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 #createButton:hover {
-    background: rgb(3, 103, 3);
+    background: #e5a900;
+}
+
+.controls-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    margin: 2rem auto;
+    width: 100%;
 }
 
 .controls {
     display: flex;
     gap: 1rem;
-    margin: 1rem auto 2rem;
-    max-width: 600px;
-    width: 100%;
+    flex: 0 0 auto;
 }
 
 #searchInput {
     flex: 1;
     padding: 0.75rem 1rem;
     border: 2px solid #ddd;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     font-size: 1rem;
-    font-family: "Jost", sans-serif;
+    font-family: "Arimo", sans-serif;
+    width: 800px;
+    height: 50px;
 }
 
 #searchInput:focus {
     outline: none;
-    border-color: rgb(3, 136, 3);
+    border-color: #ffbc0d;
 }
 
 #categoryFilter {
     padding: 0.75rem 1rem;
     border: 2px solid #ddd;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     font-size: 1rem;
-    font-family: "Jost", sans-serif;
+    font-family: "Arimo", sans-serif;
     background: white;
     cursor: pointer;
+    width: 300px;
+    height: 50px;
 }
 
 #categoryFilter:focus {
     outline: none;
-    border-color: rgb(3, 136, 3);
+    border-color: #ffbc0d;
 }
 
 #status p {
@@ -191,10 +260,34 @@ main {
 }
 
 form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Item Name takes first column (70%) */
+.field-item-name {
+    grid-column: 1;
+}
+
+/* Category takes second column (30%) */
+.field-category {
+    grid-column: 2;
+}
+
+/* Nutrition rows - each row spans full width and contains 5 columns */
+.field-nutrition {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.field-nutrition fieldset {
+    margin-bottom: 0;
+    min-width: 0;
 }
 
 fieldset {
@@ -203,6 +296,18 @@ fieldset {
     align-items: start;
     margin-bottom: 1rem;
     border: none;
+    min-width: 0;
+}
+
+fieldset input,
+fieldset select {
+    width: 75%;
+    box-sizing: border-box;
+}
+
+/* Item Name input field at 100% width */
+.field-item-name input {
+    width: 100%;
 }
 
 fieldset:has(textarea) {
@@ -219,10 +324,7 @@ textarea {
 }
 
 fieldset:has(button) {
-    width: 100%;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
+    display: none;
 }
 
 
@@ -250,7 +352,7 @@ input[type=checkbox] {
 
 /* Set accent colour for inputs. */
 input {
-    accent-color: rgb(3, 136, 3);
+    accent-color: #ffbc0d;
 }
 
 /* Style default padding for form elements */
@@ -258,6 +360,31 @@ input,
 select,
 option {
     padding: 0.5rem;
+}
+
+/* Set consistent height for text inputs and selects */
+input[type="text"],
+input[type="number"],
+select {
+    height: 3rem;
+}
+
+/* Match select height to input fields */
+select {
+    line-height: 1.5;
+}
+
+/* Grey out placeholder option in select */
+select option[value=""][disabled] {
+    color: #999;
+}
+
+select:invalid {
+    color: #999;
+}
+
+select:valid {
+    color: #333;
 }
 
 /* Range slider doesn't need padding on the sides */
@@ -302,27 +429,63 @@ textarea:user-invalid+.validation {
     border-radius: 1rem;
     padding: 1.5rem;
     margin: 1rem 0;
-    background: #ffffff66;
+    background: #ffffff;
+    border: 1px solid #666;
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: center;
     gap: 0.5rem;
     text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.item-card:hover {
+    border: 1px solid #ffbc0d;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .item-card h3 {
-    font-size: 1.1rem;
-    margin: 0 0 1rem 0;
+    font-size: 1.6rem;
+    margin: 0 0 0.25rem 0;
     color: #333;
 }
 
-.item-heading {
-    display: block;
-    flex-direction: column;
-    align-items: start;
-    justify-content: flex-start;
+.category-badge {
+    color: #ffbc0d;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    justify-content: flex-end;
     width: 100%;
+}
+
+.action-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.action-icon:hover {
+    opacity: 1;
+}
+
+.weight-info {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0;
+    font-weight: 400;
 }
 
 .microchip-info {
@@ -478,38 +641,21 @@ meter::-webkit-meter-even-less-good-value {
 
 .nutrition-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 70% 70%;
     gap: 0.5rem;
 }
 
-
-.item-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-}
-
-.edit-btn {
-    background: rgb(3, 136, 3);
-}
-
-.edit-btn:hover {
-    background-color: rgb(3, 103, 3);
-}
-
-.delete-btn {
-    background: rgb(211, 47, 47);
-}
-
-.delete-btn:hover {
-    background-color: rgb(183, 28, 28);
+/* Hide old edit/delete buttons in item cards - replaced by icons */
+.item-card .edit-btn,
+.item-card .delete-btn {
+    display: none;
 }
 
 .toast {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: rgb(3, 136, 3);
+    background: #ffbc0d;
     color: white;
     padding: 1rem 1.5rem;
     border-radius: 1rem;
@@ -568,4 +714,13 @@ meter::-webkit-meter-even-less-good-value {
     gap: 1rem;
     justify-content: center;
     margin-top: 1.5rem;
+}
+
+.modal-actions .delete-btn {
+    display: inline-block;
+    background: #d32f2f;
+}
+
+.modal-actions .delete-btn:hover {
+    background: #b71c1c;
 }

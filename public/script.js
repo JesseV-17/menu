@@ -226,13 +226,93 @@ const renderItem = (item) => {
     div.classList.add('item-card')
     div.setAttribute('data-id', item.id)
 
+    // Parse item name to extract weight information
+    let itemName = item.ITEM || 'Unnamed Item'
+    let weightInfo = ''
+    const category = item.CATEGORY || ''
+    
+    // Try multiple patterns in order of specificity
+    
+    // Pattern 1: Match "X fl oz cup (Y g)" - e.g., "12 fl oz cup (310 g)"
+    let pattern = /(\d+\.?\d*)\s*fl\s*oz\s*cup\s*\(\d+\s*g\)/i
+    let match = itemName.match(pattern)
+    if (match) {
+        const flOz = match[1]
+        itemName = itemName.replace(pattern, '').trim()
+        weightInfo = `<div class="weight-info">${flOz} fl oz</div>`
+    }
+    
+    // Pattern 2: Match "(X fl oz cup)" - e.g., "(12 fl oz cup)"
+    if (!weightInfo) {
+        pattern = /\((\d+\.?\d*)\s*fl\s*oz\s*cup\)/i
+        match = itemName.match(pattern)
+        if (match) {
+            const flOz = match[1]
+            itemName = itemName.replace(pattern, '').trim()
+            weightInfo = `<div class="weight-info">${flOz} fl oz</div>`
+        }
+    }
+    
+    // Pattern 3: Match "X fl oz" - e.g., "22 fl oz"
+    if (!weightInfo) {
+        pattern = /(\d+\.?\d*)\s*fl\s*oz/i
+        match = itemName.match(pattern)
+        if (match) {
+            const flOz = match[1]
+            itemName = itemName.replace(pattern, '').trim()
+            weightInfo = `<div class="weight-info">${flOz} fl oz</div>`
+        }
+    }
+    
+    // Pattern 4: Match "X oz (Y g)" - e.g., "8.9 oz (251 g)"
+    if (!weightInfo) {
+        pattern = /(\d+\.?\d*)\s*oz\s*\((\d+)\s*g\)/i
+        match = itemName.match(pattern)
+        if (match) {
+            const ounces = match[1]
+            const grams = match[2]
+            itemName = itemName.replace(pattern, '').trim()
+            
+            if (category === 'DESSERTSHAKE' || category === 'CONDIMENT' || category === 'BEVERAGE') {
+                weightInfo = `<div class="weight-info">${ounces} oz</div>`
+            } else {
+                weightInfo = `<div class="weight-info">${grams} g</div>`
+            }
+        }
+    }
+    
+    // Pattern 5: Match "X cookie (Y g)" - e.g., "1 cookie (33 g)"
+    if (!weightInfo) {
+        pattern = /\d+\s*cookie\s*\((\d+\.?\d*)\s*g\)/i
+        match = itemName.match(pattern)
+        if (match) {
+            const grams = match[1]
+            itemName = itemName.replace(pattern, '').trim()
+            weightInfo = `<div class="weight-info">${grams} g</div>`
+        }
+    }
+    
+    // Pattern 6: Match standalone "(X g)" or "X g" - only for non-beverage items
+    if (!weightInfo && category !== 'DESSERTSHAKE' && category !== 'CONDIMENT' && category !== 'BEVERAGE') {
+        pattern = /\(?\s*(\d+\.?\d*)\s*g\s*\)?/i
+        match = itemName.match(pattern)
+        if (match) {
+            const grams = match[1]
+            itemName = itemName.replace(pattern, '').trim()
+            weightInfo = `<div class="weight-info">${grams} g</div>`
+        }
+    }
+
     const template = /*html*/`  
-    <div class="item-heading">
-        <div class="category-badge">
-            ${item.CATEGORY || 'N/A'}
-        </div>
-        <h3>${item.ITEM || 'Unnamed Item'}</h3>  
+    <div class="item-actions">
+        <img src="./assets/edit.svg" alt="Edit" class="action-icon edit-icon" />
+        <img src="./assets/trash.svg" alt="Delete" class="action-icon delete-icon" />
     </div>
+    <div class="category-badge">
+        ${item.CATEGORY || 'N/A'}
+    </div>
+    <h3>${itemName}</h3>
+    ${weightInfo}
     <div class="item-info"> 
         <div class="nutrition-facts">
             <h4>Nutrition Facts</h4>
@@ -250,17 +330,12 @@ const renderItem = (item) => {
             </div>
         </div>
     </div>
-        
-    <div class="item-actions">
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-    </div>
     `
     div.innerHTML = DOMPurify.sanitize(template);
 
-    // Add event listeners to buttons
-    div.querySelector('.edit-btn').addEventListener('click', () => editItem(item))
-    div.querySelector('.delete-btn').addEventListener('click', () => deleteItem(item.id))
+    // Add event listeners to icons
+    div.querySelector('.edit-icon').addEventListener('click', () => editItem(item))
+    div.querySelector('.delete-icon').addEventListener('click', () => deleteItem(item.id))
 
     return div
 }
