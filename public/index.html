@@ -37,6 +37,7 @@
 <body>
   <header>
     <h1>McDonald's Menu Items</h1>
+    <button id="viewToggleBtn" class="view-toggle-btn">Customer View</button>
   </header>
 
   <div
@@ -271,6 +272,18 @@
     src="script.js?v=4"
     type="module"
   ></script>
+  
+  <script>
+    // View toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('viewToggleBtn');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          window.location.href = 'index2.html';
+        });
+      }
+    });
+  </script>
 
 </body>
 

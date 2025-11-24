@@ -1,28 +1,45 @@
-let myForm = document.querySelector('#myForm')
-let contentArea = document.querySelector('#contentArea')
-let formPopover = document.querySelector('#formPopover')
-let createButton = document.querySelector('#createButton')
-let formHeading = document.querySelector('#formPopover h2')
-let searchInput = document.querySelector('#searchInput')
-let categoryFilter = document.querySelector('#categoryFilter')
+/**
+ * MANAGER VIEW - SCRIPT.JS
+ * Handles CRUD operations for McDonald's menu items in the manager interface
+ * Includes form handling, data parsing, filtering, and API communication
+ */
 
+// === DOM ELEMENT REFERENCES ===
+// Get references to key elements on the page
+let myForm = document.querySelector('#myForm')  // The form for adding/editing items
+let contentArea = document.querySelector('#contentArea')  // Container for displaying menu items
+let formPopover = document.querySelector('#formPopover')  // The popup form overlay
+let createButton = document.querySelector('#createButton')  // Button to create new items
+let formHeading = document.querySelector('#formPopover h2')  // Form title (changes for add/edit)
+let searchInput = document.querySelector('#searchInput')  // Search box for filtering items
+let categoryFilter = document.querySelector('#categoryFilter')  // Category dropdown filter
+
+// === GLOBAL STATE ===
 // Store all items for filtering
 let allItems = []
 
-// Toast notification function
+// === TOAST NOTIFICATION SYSTEM ===
+/**
+ * Display a temporary notification message
+ * @param {string} message - The message to display in the toast
+ */
 const showToast = (message) => {
     const toast = document.getElementById('toast')
     toast.textContent = message
-    toast.classList.add('show')
+    toast.classList.add('show')  // Show the toast
     
+    // Hide the toast after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show')
     }, 3000)
 }
 
-// Get form data and process each type of input
-// Prepare the data as JSON with a proper set of types
-// e.g. Booleans, Numbers, Dates
+// === FORM DATA EXTRACTION ===
+/**
+ * Extract and process form data, converting strings to appropriate types
+ * Handles checkboxes (boolean), numbers (string/null), dates (ISO format), and text fields
+ * @returns {Object} Form data as JSON with properly typed values
+ */
 const getFormData = () => {
     // FormData gives a baseline representation of the form
     // with all fields represented as strings
@@ -71,7 +88,11 @@ const getFormData = () => {
 }
 
 
-// listen for form submissions  
+// === FORM SUBMISSION HANDLER ===
+/**
+ * Listen for form submissions
+ * Prevent page reload, extract form data, save to database, and close form
+ */
 myForm.addEventListener('submit', async event => {
     // prevent the page from reloading when the form is submitted.
     event.preventDefault()
@@ -82,11 +103,16 @@ myForm.addEventListener('submit', async event => {
 })
 
 
-// Save item (Create or Update)
+// === SAVE ITEM (CREATE OR UPDATE) ===
+/**
+ * Save a menu item to the database via API
+ * Handles both creating new items (POST) and updating existing items (PUT)
+ * @param {Object} data - The menu item data to save
+ */
 const saveItem = async (data) => {
     console.log('Saving:', data)
 
-    // Determine if this is an update or create
+    // Determine if this is an update or create based on presence of ID
     const endpoint = data.id ? `/data/${data.id}` : '/data'
     const method = data.id ? "PUT" : "POST"
 
@@ -120,7 +146,7 @@ const saveItem = async (data) => {
         console.log('Saved:', result)
         showToast('Menu item saved successfully!')
 
-        // Refresh the data list
+        // Refresh the data list to show the new/updated item
         getData()
     }
     catch (err) {
@@ -130,7 +156,12 @@ const saveItem = async (data) => {
 }
 
 
-// Edit item - populate form with existing data
+// === EDIT ITEM ===
+/**
+ * Populate the form with existing item data for editing
+ * Opens the form popover in edit mode
+ * @param {Object} data - The menu item data to edit
+ */
 const editItem = (data) => {
     console.log('Editing:', data)
 
@@ -156,16 +187,21 @@ const editItem = (data) => {
     formPopover.showPopover()
 }
 
-// Delete item
+// === DELETE ITEM ===
+/**
+ * Delete a menu item from the database after user confirmation
+ * Shows a modal dialog for confirmation before deleting
+ * @param {string} id - The ID of the item to delete
+ */
 const deleteItem = async (id) => {
     const modal = document.getElementById('deleteModal')
     const confirmBtn = document.getElementById('confirmDelete')
     const cancelBtn = document.getElementById('cancelDelete')
     
-    // Show modal
+    // Show confirmation modal
     modal.classList.add('show')
     
-    // Handle confirmation
+    // Handle confirmation - user clicks "Delete"
     const handleConfirm = async () => {
         modal.classList.remove('show')
         confirmBtn.removeEventListener('click', handleConfirm)
@@ -181,7 +217,7 @@ const deleteItem = async (id) => {
                 const result = await response.json()
                 console.log('Deleted:', result)
                 showToast('Item deleted successfully')
-                // Refresh the data list
+                // Refresh the data list to remove the deleted item
                 getData()
             }
             else {
@@ -194,18 +230,24 @@ const deleteItem = async (id) => {
         }
     }
     
-    // Handle cancel
+    // Handle cancel - user clicks "Cancel"
     const handleCancel = () => {
         modal.classList.remove('show')
         confirmBtn.removeEventListener('click', handleConfirm)
         cancelBtn.removeEventListener('click', handleCancel)
     }
     
+    // Attach event listeners to modal buttons
     confirmBtn.addEventListener('click', handleConfirm)
     cancelBtn.addEventListener('click', handleCancel)
 }
 
-
+// === CALENDAR WIDGET (UNUSED) ===
+/**
+ * Create a calendar widget display for a date
+ * @param {string} date - ISO date string
+ * @returns {string} HTML string for calendar widget
+ */
 const calendarWidget = (date) => {
     if (!date) return ''
     const month = new Date(date).toLocaleString("en-CA", { month: 'short', timeZone: "UTC" })
@@ -220,13 +262,21 @@ const calendarWidget = (date) => {
 
 }
 
-// Render a single item
+// === RENDER ITEM CARD ===
+/**
+ * Create an HTML element for displaying a menu item card
+ * Parses item name to extract and display weight information separately
+ * Supports multiple weight formats: fl oz, oz, grams, cookies
+ * @param {Object} item - Menu item object from database
+ * @returns {HTMLElement} Div element containing the rendered item card
+ */
 const renderItem = (item) => {
     const div = document.createElement('div')
     div.classList.add('item-card')
     div.setAttribute('data-id', item.id)
 
-    // Parse item name to extract weight information
+    // === WEIGHT PARSING LOGIC ===
+    // Parse item name to extract weight information and display it separately
     let itemName = item.ITEM || 'Unnamed Item'
     let weightInfo = ''
     const category = item.CATEGORY || ''
@@ -234,6 +284,7 @@ const renderItem = (item) => {
     // Try multiple patterns in order of specificity
     
     // Pattern 1: Match "X fl oz cup (Y g)" - e.g., "12 fl oz cup (310 g)"
+    // For beverages with both fl oz and grams
     let pattern = /(\d+\.?\d*)\s*fl\s*oz\s*cup\s*\(\d+\s*g\)/i
     let match = itemName.match(pattern)
     if (match) {
@@ -243,6 +294,7 @@ const renderItem = (item) => {
     }
     
     // Pattern 2: Match "(X fl oz cup)" - e.g., "(12 fl oz cup)"
+    // For beverages with fl oz in parentheses
     if (!weightInfo) {
         pattern = /\((\d+\.?\d*)\s*fl\s*oz\s*cup\)/i
         match = itemName.match(pattern)
@@ -254,6 +306,7 @@ const renderItem = (item) => {
     }
     
     // Pattern 3: Match "X fl oz" - e.g., "22 fl oz"
+    // For beverages with standalone fl oz
     if (!weightInfo) {
         pattern = /(\d+\.?\d*)\s*fl\s*oz/i
         match = itemName.match(pattern)
@@ -265,6 +318,7 @@ const renderItem = (item) => {
     }
     
     // Pattern 4: Match "X oz (Y g)" - e.g., "8.9 oz (251 g)"
+    // For items with both oz and grams - show oz for beverages, grams for food
     if (!weightInfo) {
         pattern = /(\d+\.?\d*)\s*oz\s*\((\d+)\s*g\)/i
         match = itemName.match(pattern)
@@ -273,6 +327,7 @@ const renderItem = (item) => {
             const grams = match[2]
             itemName = itemName.replace(pattern, '').trim()
             
+            // For beverages, show ounces; for food items, show grams (more precise)
             if (category === 'DESSERTSHAKE' || category === 'CONDIMENT' || category === 'BEVERAGE') {
                 weightInfo = `<div class="weight-info">${ounces} oz</div>`
             } else {
@@ -282,6 +337,7 @@ const renderItem = (item) => {
     }
     
     // Pattern 5: Match "X cookie (Y g)" - e.g., "1 cookie (33 g)"
+    // Special case for cookies with weight
     if (!weightInfo) {
         pattern = /\d+\s*cookie\s*\((\d+\.?\d*)\s*g\)/i
         match = itemName.match(pattern)
@@ -293,6 +349,7 @@ const renderItem = (item) => {
     }
     
     // Pattern 6: Match standalone "(X g)" or "X g" - only for non-beverage items
+    // For food items with grams only (not beverages)
     if (!weightInfo && category !== 'DESSERTSHAKE' && category !== 'CONDIMENT' && category !== 'BEVERAGE') {
         pattern = /\(?\s*(\d+\.?\d*)\s*g\s*\)?/i
         match = itemName.match(pattern)
@@ -303,6 +360,8 @@ const renderItem = (item) => {
         }
     }
 
+    // === BUILD ITEM CARD HTML ===
+    // Create the HTML template for the item card with nutrition facts
     const template = /*html*/`  
     <div class="item-actions">
         <img src="./assets/edit.svg" alt="Edit" class="action-icon edit-icon" />
@@ -331,32 +390,39 @@ const renderItem = (item) => {
         </div>
     </div>
     `
+    // Sanitize HTML to prevent XSS attacks
     div.innerHTML = DOMPurify.sanitize(template);
 
-    // Add event listeners to icons
+    // Add event listeners to action icons
     div.querySelector('.edit-icon').addEventListener('click', () => editItem(item))
     div.querySelector('.delete-icon').addEventListener('click', () => deleteItem(item.id))
 
     return div
 }
 
-// Filter and display items based on search and category
+// === FILTER AND DISPLAY ITEMS ===
+/**
+ * Filter items based on search term and category selection
+ * Display the filtered results in the content area
+ */
 const filterAndDisplayItems = () => {
     const searchTerm = searchInput.value.toLowerCase().trim()
     const selectedCategory = categoryFilter.value
 
+    // Filter items by both search term and category
     const filteredItems = allItems.filter(item => {
-        // Filter by search term
+        // Filter by search term - check if item name contains the search
         const matchesSearch = !searchTerm || 
             (item.ITEM && item.ITEM.toLowerCase().includes(searchTerm))
         
-        // Filter by category
+        // Filter by category - check if item matches selected category
         const matchesCategory = !selectedCategory || item.CATEGORY === selectedCategory
         
+        // Item must match both criteria
         return matchesSearch && matchesCategory
     })
 
-    // Display filtered items
+    // Display filtered items or show "no results" message
     contentArea.innerHTML = ''
     if (filteredItems.length === 0) {
         contentArea.innerHTML = '<p><i>No items match your search.</i></p>'
@@ -368,7 +434,11 @@ const filterAndDisplayItems = () => {
     }
 }
 
-// fetch items from API endpoint and populate the content div
+// === FETCH DATA FROM API ===
+/**
+ * Fetch all menu items from the API endpoint
+ * Store items in global state and display them
+ */
 const getData = async () => {
     console.log('getData() called - fetching menu items...')
     try {
@@ -384,6 +454,7 @@ const getData = async () => {
                 return
             }
             else {
+                // Store items globally for filtering
                 allItems = data
                 filterAndDisplayItems()
             }
@@ -399,22 +470,27 @@ const getData = async () => {
     }
 }
 
-// Revert to the default form title on reset
+// === EVENT LISTENERS ===
+
+// Revert to the default form title when form is reset
 myForm.addEventListener('reset', () => formHeading.textContent = '🍔 Add Menu Item')
 
-// Reset the form when the create button is clicked
+// Reset the form when the create button is clicked (starts fresh)
 createButton.addEventListener('click', () => myForm.reset())
 
-// Handle cancel button click
+// Handle cancel button click - close form without saving
 const cancelButton = document.querySelector('button.cancel')
 cancelButton.addEventListener('click', () => {
     myForm.reset()
     formPopover.hidePopover()
 })
 
-// Add search and filter event listeners
+// Add search input listener - filter items as user types
 searchInput.addEventListener('input', filterAndDisplayItems)
+
+// Add category filter listener - filter items when category changes
 categoryFilter.addEventListener('change', filterAndDisplayItems)
 
-// Load initial data
+// === INITIALIZATION ===
+// Load initial data when page loads
 getData()

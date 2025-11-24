@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>McDonald's Nutrition Filters</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+  <script type="module" src="main.js"></script>
+  
+</head>
+
+<body class="customer-view"> 
+  <header>
+    <h1>McDonald's Menu & Nutrition</h1>
+    <button id="viewToggleBtn" class="view-toggle-btn">Manager View</button>
+    <p>Browse McDonald's menu items and their nutritional information</p>
+  </header>
+  
+  <main>
+    <!-- Menu items will be dynamically added here -->
+  </main>
+  
+  <script>
+    // View toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('viewToggleBtn');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
